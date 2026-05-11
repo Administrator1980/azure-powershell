@@ -436,7 +436,7 @@ namespace Microsoft.Azure.Commands.Management.Storage
 
         [Parameter(
             Mandatory = false,
-            HelpMessage = "The minimum TLS version to be permitted on requests to storage.")]
+            HelpMessage = "The minimum TLS version to be permitted on requests to storage. TLS 1.3 is not yet supported.")]
         [ValidateSet(StorageModels.MinimumTlsVersion.TLS10,
             StorageModels.MinimumTlsVersion.TLS11,
             StorageModels.MinimumTlsVersion.TLS12,
@@ -934,6 +934,11 @@ namespace Microsoft.Azure.Commands.Management.Storage
                     }
                     if (this.minimumTlsVersion != null)
                     {
+                        if (this.minimumTlsVersion == StorageModels.MinimumTlsVersion.TLS10 || this.minimumTlsVersion == StorageModels.MinimumTlsVersion.TLS11)
+                        {
+                            WriteWarning("TLS 1.0 and TLS 1.1 are retired, so will use TLS 1.2");
+                            this.minimumTlsVersion = StorageModels.MinimumTlsVersion.TLS12;
+                        }
                         updateParameters.MinimumTlsVersion = this.minimumTlsVersion;
                     }
                     if (this.allowBlobPublicAccess != null)
